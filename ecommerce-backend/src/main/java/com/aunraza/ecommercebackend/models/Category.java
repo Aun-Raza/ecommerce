@@ -1,8 +1,20 @@
 package com.aunraza.ecommercebackend.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
+
+@Entity
 public class Category {
+    @Id
+    @GeneratedValue
     private Integer id;
     private String name;
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
 
     public Integer getId() {
         return id;

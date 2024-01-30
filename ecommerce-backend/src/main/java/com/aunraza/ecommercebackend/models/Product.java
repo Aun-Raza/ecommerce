@@ -1,11 +1,19 @@
 package com.aunraza.ecommercebackend.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class Product {
+    @Id
+    @GeneratedValue
     private Integer id;
     private String name;
     private String description;
     private Double price;
-
+    @ManyToOne
     private Category category;
 
     public Integer getId() {

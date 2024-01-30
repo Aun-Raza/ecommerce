@@ -1,52 +1,51 @@
 package com.aunraza.ecommercebackend.controllers;
 
 import com.aunraza.ecommercebackend.models.Category;
+import com.aunraza.ecommercebackend.repositories.CategoryRepository;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/categories")
 public class CategoryController {
-    private static int count;
-    private static List<Category> categories = new ArrayList<>(List.of(
-            new Category(++count, "Digital Watch"),
-            new Category(++count, "Smartphone"),
-            new Category(++count, "Tablet"),
-            new Category(++count, "Headphone")
-    ));
+
+    private CategoryRepository categoryRepository;
+
+    public CategoryController(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
+
     @GetMapping("")
     public List<Category> retrieveAllCategories() {
-        return categories;
+        return categoryRepository.findAll();
     }
 
     @GetMapping("/{categoryId}")
     public Category retrieveCategory(@PathVariable Integer categoryId) {
-        Optional<Category> foundCategory = categories.stream().filter(
-                category -> category.getId().equals(categoryId))
-                .findFirst();
-        return foundCategory.orElse(null);
+        Optional<Category> category = categoryRepository.findById(categoryId);
+        return category.orElse(null);
     }
 
     @PostMapping("")
     public void createCategory(@RequestBody Category category) {
-        category.setId(++count);
-        categories.add(category);
+        category.setId(null); // in case user pass id in body
+        categoryRepository.save(category);
     }
 
     @PutMapping("/{categoryId}")
     public void modifyCategory(@PathVariable Integer categoryId,
                                @RequestBody Category modifiedCategory) {
-        Optional<Category> foundCategory = categories.stream().filter(
-                        category -> category.getId().equals(categoryId))
-                .findFirst();
-        foundCategory.ifPresent(category -> category.setName(modifiedCategory.getName()));
+        Optional<Category> category = categoryRepository.findById(categoryId);
+        if (category.isPresent()) {
+            modifiedCategory.setId(categoryId);
+            categoryRepository.save(modifiedCategory);
+        }
     }
 
     @DeleteMapping("/{categoryId}")
     public void deleteCategory(@PathVariable Integer categoryId) {
-        categories.removeIf(category -> category.getId().equals(categoryId));
+        categoryRepository.deleteById(categoryId);
     }
 }
