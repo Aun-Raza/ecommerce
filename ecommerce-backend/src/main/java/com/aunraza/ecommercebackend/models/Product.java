@@ -1,9 +1,8 @@
 package com.aunraza.ecommercebackend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Product {
@@ -15,6 +14,9 @@ public class Product {
     private Double price;
     @ManyToOne
     private Category category;
+
+    @OneToMany(mappedBy = "product")
+    private List<OrderProduct> orderProducts;
 
     public Integer getId() {
         return id;
@@ -56,13 +58,22 @@ public class Product {
         this.category = category;
     }
 
+    public List<OrderProduct> getOrderProducts() {
+        return orderProducts;
+    }
+
+    public void setOrderProducts(List<OrderProduct> orderProducts) {
+        this.orderProducts = orderProducts;
+    }
+
     public Product() {}
 
-    public Product(Integer id, String name, String description, Double price, Category category) {
+    public Product(Integer id, String name, String description, Double price, Category category, List<OrderProduct> orderProducts) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
+        this.orderProducts = orderProducts;
     }
 }
