@@ -1,5 +1,6 @@
 package com.aunraza.ecommercebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class Product {
     private Category category;
 
     @OneToMany(mappedBy = "product")
+    @JsonIgnore
     private List<OrderProduct> orderProducts;
 
     public Integer getId() {
