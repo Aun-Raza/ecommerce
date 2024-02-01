@@ -38,3 +38,8 @@ export async function modifyProduct(
     console.log(error);
   }
 }
+
+export async function deleteProduct(id: string) {
+  await axios.delete(`/products/${id}`);
+  return;
+}
