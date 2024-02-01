@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { ProductType } from '../../../api/types';
 import { retrieveAllProducts } from '../../../api';
 
-const ProductList = () => {
+type ProductListProps = {
+  category: string | null;
+};
+
+const ProductList = ({ category }: ProductListProps) => {
   const [products, setProducts] = useState<ProductType[]>([]);
 
   useEffect(() => {
@@ -12,17 +16,26 @@ const ProductList = () => {
     }
     init();
   }, []);
+
+  function renderProducts(products: ProductType[]) {
+    return products.map(({ id, name, description, price }) => (
+      <li key={id} className='h-32 border p-2'>
+        <h3>{name}</h3>
+        <p>{description}</p>
+        <p>Price ${price.toFixed(2)}</p>
+        <button>Add to Cart</button>
+        <p>Stock: 100</p>
+      </li>
+    ));
+  }
+
   return (
     <ul className='w-3/4 grid grid-cols-3 gap-2'>
-      {products.map(({ name, description, price }) => (
-        <li className='h-32 border p-2'>
-          <h3>{name}</h3>
-          <p>{description}</p>
-          <p>Price ${price.toFixed(2)}</p>
-          <button>Add to Cart</button>
-          <p>Stock: 100</p>
-        </li>
-      ))}
+      {renderProducts(
+        category !== null
+          ? products.filter((product) => product.category.name === category)
+          : products
+      )}
     </ul>
   );
 };

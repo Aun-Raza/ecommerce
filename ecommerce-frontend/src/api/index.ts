@@ -8,6 +8,7 @@ export async function retrieveAllCategories() {
 }
 
 export async function retrieveAllProducts(category: string | null) {
-  const { data } = await axios.get<ProductType[]>('/products');
+  const endpoint = `/products${category ? `?category=${category}` : ''}`;
+  const { data } = await axios.get<ProductType[]>(endpoint);
   return data;
 }
