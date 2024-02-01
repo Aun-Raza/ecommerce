@@ -1,5 +1,6 @@
 package com.aunraza.ecommercebackend.controllers;
 
+import com.aunraza.ecommercebackend.dtos.ProductWithCategoryId;
 import com.aunraza.ecommercebackend.models.Category;
 import com.aunraza.ecommercebackend.models.Product;
 import com.aunraza.ecommercebackend.repositories.CategoryRepository;
@@ -21,8 +22,14 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public List<Product> retrieveAllProducts() {
-        return productRepository.findAll();
+    public List<Product> retrieveAllProducts(@RequestParam Optional<String> category) {
+        List<Product> products = productRepository.findAll();
+        if (category.isPresent()) {
+            return products.stream().filter(
+                product -> product.getCategory().getName()
+                    .equals(category.get())).toList();
+        }
+        else return products;
     }
 
     @GetMapping("/{productId}")
@@ -31,25 +38,25 @@ public class ProductController {
         return product.orElse(null);
     }
 
-    @PostMapping("/{categoryId}")
-    public void createProduct(@RequestBody Product product,
-                              @PathVariable Integer categoryId) {
-        Optional<Category> category = categoryRepository.findById(categoryId);
+    @PostMapping("")
+    public void createProduct(@RequestBody ProductWithCategoryId request) {
+        Optional<Category> category = categoryRepository.findById(request.getCategoryId());
         if (category.isPresent()) {
+            var product = request.getProduct();
             product.setId(null); // in case user pass id in body
             product.setCategory(category.get());
             productRepository.save(product);
         }
     }
 
-    @PutMapping("{categoryId}/{productId}")
+    @PutMapping("/{productId}")
     public void modifyProduct(
-            @PathVariable Integer categoryId,
             @PathVariable Integer productId,
-           @RequestBody Product modifiedProduct) {
-        Optional<Category> category = categoryRepository.findById(categoryId);
+           @RequestBody ProductWithCategoryId request) {
+        Optional<Category> category = categoryRepository.findById(request.getCategoryId());
         Optional<Product> product = productRepository.findById(productId);
         if (category.isPresent() && product.isPresent()) {
+            var modifiedProduct = request.getProduct();
             modifiedProduct.setId(productId);
             modifiedProduct.setCategory(category.get());
             productRepository.save(modifiedProduct);

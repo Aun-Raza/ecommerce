@@ -19,7 +19,7 @@ const ProductList = ({ category }: ProductListProps) => {
 
   function renderProducts(products: ProductType[]) {
     return products.map(({ id, name, description, price }) => (
-      <li key={id} className='h-32 border p-2'>
+      <li key={id} className='h-fit border p-2'>
         <h3>{name}</h3>
         <p>{description}</p>
         <p>Price ${price.toFixed(2)}</p>
