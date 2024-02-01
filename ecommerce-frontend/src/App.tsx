@@ -13,10 +13,10 @@ function App() {
         <Switch>
           <Route exact path='/' component={Home} />
           <Route exact path='/add-product'>
-            <ProductForm />
+            <ProductForm operation='add' />
           </Route>
-          <Route exact path='/modify-product'>
-            <ProductForm />
+          <Route exact path='/modify-product/:id'>
+            <ProductForm operation='modify' />
           </Route>
           <Route path='*' component={Error} />
         </Switch>

@@ -6,6 +6,14 @@ button {
   @apply bg-blue-500 text-white;
 }
 
+.warning {
+  @apply bg-yellow-500 text-white;
+}
+
+.danger {
+  @apply bg-red-500 text-white;
+}
+
 h2 {
   @apply text-xl font-semibold;
 }

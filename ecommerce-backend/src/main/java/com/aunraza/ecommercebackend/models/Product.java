@@ -16,7 +16,7 @@ public class Product {
     @ManyToOne
     private Category category;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<OrderProduct> orderProducts;
 

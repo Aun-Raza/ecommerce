@@ -4,13 +4,25 @@ import {
   ProductWithCategoryIdType,
   defaultProductWithCategoryId,
 } from '../../../api/types';
-import { createProduct, retrieveAllCategories } from '../../../api';
+import {
+  createProduct,
+  retrieveProduct,
+  retrieveAllCategories,
+  modifyProduct,
+} from '../../../api';
+import { useParams, useHistory } from 'react-router-dom';
 
-const ProductForm = () => {
+type ProductFormType = {
+  operation: string;
+};
+
+const ProductForm = ({ operation }: ProductFormType) => {
   const [body, setBody] = useState<ProductWithCategoryIdType>(
     defaultProductWithCategoryId
   );
   const [categories, setCategories] = useState<CategoryType[]>([]);
+  const { id: paramId } = useParams<{ id: string }>();
+  const history = useHistory();
 
   useEffect(() => {
     async function init() {
@@ -19,6 +31,22 @@ const ProductForm = () => {
     }
     init();
   }, []);
+
+  // only for modifying
+  useEffect(() => {
+    async function init() {
+      if (operation === 'modify' && paramId) {
+        const { name, description, price, category } = await retrieveProduct(
+          paramId
+        );
+        setBody({
+          product: { name, description, price },
+          categoryId: category.id,
+        });
+      }
+    }
+    init();
+  }, [paramId]);
 
   function handleBodyChange(
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -37,7 +65,12 @@ const ProductForm = () => {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await createProduct(body);
+    if (operation === 'add') {
+      await createProduct(body);
+    } else if (operation === 'modify' && paramId) {
+      await modifyProduct(paramId, body);
+    }
+    history.push('/');
   }
 
   return (
@@ -58,6 +91,7 @@ const ProductForm = () => {
         <input
           id='description'
           name='description'
+          value={body.product.description}
           onChange={handleBodyChange}
         />
       </fieldset>
@@ -67,6 +101,7 @@ const ProductForm = () => {
           id='price'
           type='number'
           name='price'
+          value={body.product.price}
           onChange={handleBodyChange}
         />
       </fieldset>

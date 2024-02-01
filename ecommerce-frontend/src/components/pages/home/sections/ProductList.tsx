@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ProductType } from '../../../../api/types';
 import { retrieveAllProducts } from '../../../../api';
+import { Link } from 'react-router-dom';
 
 type ProductListProps = {
   category: string | null;
@@ -23,8 +24,12 @@ const ProductList = ({ category }: ProductListProps) => {
         <h3>{name}</h3>
         <p>{description}</p>
         <p>Price ${price.toFixed(2)}</p>
-        <button>Add to Cart</button>
-        <p>Stock: 100</p>
+        <div className='flex gap-2 mt-2'>
+          <button className='primary'>Add to Cart</button>
+          <button className='warning'>
+            <Link to={`/modify-product/${id}`}>Modify</Link>
+          </button>
+        </div>
       </li>
     ));
   }
