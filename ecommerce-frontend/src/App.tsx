@@ -1,18 +1,23 @@
 import './App.css';
-import Header from './components/layouts/Header';
 import Navbar from './components/layouts/Navbar';
 import { Route, Switch } from 'react-router-dom';
 import Home from './components/pages/home';
 import Error from './components/pages/error';
+import ProductForm from './components/pages/forms/ProductForm';
 
 function App() {
   return (
     <div>
       <Navbar />
-      <Header />
       <main className='container mx-auto'>
         <Switch>
           <Route exact path='/' component={Home} />
+          <Route exact path='/add-product'>
+            <ProductForm />
+          </Route>
+          <Route exact path='/modify-product'>
+            <ProductForm />
+          </Route>
           <Route path='*' component={Error} />
         </Switch>
       </main>

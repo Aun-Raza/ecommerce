@@ -5,3 +5,17 @@ button {
 .primary {
   @apply bg-blue-500 text-white;
 }
+
+h2 {
+  @apply text-xl font-semibold;
+}
+
+fieldset {
+  @apply py-2 flex flex-col gap-2 text-xl;
+}
+
+fieldset > input,
+textarea,
+select {
+  @apply border rounded p-2 pt-1;
+}
