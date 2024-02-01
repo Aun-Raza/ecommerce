@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { retrieveAllCategories } from '../../../api';
-import { CategoryType } from '../../../api/types';
+import { retrieveAllCategories } from '../../../../api';
+import { CategoryType } from '../../../../api/types';
 
 type CategorySelectionProps = {
   onCategoryChange: (category: string) => void;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ProductType } from '../../../api/types';
-import { retrieveAllProducts } from '../../../api';
+import { ProductType } from '../../../../api/types';
+import { retrieveAllProducts } from '../../../../api';
 
 type ProductListProps = {
   category: string | null;

@@ -1,0 +1,7 @@
+button {
+  @apply p-3 border rounded-lg;
+}
+
+.primary {
+  @apply bg-blue-500 text-white;
+}
