@@ -10,3 +10,21 @@ export type ProductType = {
   price: number;
   category: CategoryType;
 };
+
+export type ProductWithCategoryIdType = {
+  product: {
+    name: string;
+    description: string;
+    price: number;
+  };
+  categoryId: number;
+};
+
+export const defaultProductWithCategoryId: ProductWithCategoryIdType = {
+  product: {
+    name: '',
+    description: '',
+    price: 10.0,
+  },
+  categoryId: 0,
+};
