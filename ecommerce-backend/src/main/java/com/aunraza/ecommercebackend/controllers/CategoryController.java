@@ -2,6 +2,8 @@ package com.aunraza.ecommercebackend.controllers;
 
 import com.aunraza.ecommercebackend.models.Category;
 import com.aunraza.ecommercebackend.repositories.CategoryRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,34 +20,40 @@ public class CategoryController {
     }
 
     @GetMapping("")
-    public List<Category> retrieveAllCategories() {
-        return categoryRepository.findAll();
+    public ResponseEntity<List<Category>> retrieveAllCategories() {
+        return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{categoryId}")
-    public Category retrieveCategory(@PathVariable Integer categoryId) {
+    public ResponseEntity<Category> retrieveCategory(@PathVariable Integer categoryId) {
         Optional<Category> category = categoryRepository.findById(categoryId);
-        return category.orElse(null);
+        if (category.isPresent())
+            return new ResponseEntity<>(category.get(), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("")
-    public void createCategory(@RequestBody Category category) {
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
         category.setId(null); // in case user pass id in body
-        categoryRepository.save(category);
+        var createdCategory = categoryRepository.save(category);
+        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
     @PutMapping("/{categoryId}")
-    public void modifyCategory(@PathVariable Integer categoryId,
+    public ResponseEntity<Category> modifyCategory(@PathVariable Integer categoryId,
                                @RequestBody Category modifiedCategory) {
         Optional<Category> category = categoryRepository.findById(categoryId);
         if (category.isPresent()) {
             modifiedCategory.setId(categoryId);
             categoryRepository.save(modifiedCategory);
+            return new ResponseEntity<>(modifiedCategory, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{categoryId}")
-    public void deleteCategory(@PathVariable Integer categoryId) {
+    public ResponseEntity<Object> deleteCategory(@PathVariable Integer categoryId) {
         categoryRepository.deleteById(categoryId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

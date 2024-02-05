@@ -3,6 +3,8 @@ package com.aunraza.ecommercebackend.controllers;
 import com.aunraza.ecommercebackend.models.CustomerOrder;
 import com.aunraza.ecommercebackend.repositories.CustomerOrderRepository;
 import com.aunraza.ecommercebackend.repositories.OrderProductRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,24 +22,27 @@ public class OrderController {
     }
 
     @GetMapping("")
-    public List<CustomerOrder> retrieveAllOrders() {
-        return customerOrderRepository.findAll();
+    public ResponseEntity<List<CustomerOrder>> retrieveAllOrders() {
+        return new ResponseEntity<>(customerOrderRepository.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("{orderId}")
-    public CustomerOrder retrieveOrder(@PathVariable Integer orderId) {
+    public ResponseEntity<CustomerOrder> retrieveOrder(@PathVariable Integer orderId) {
         Optional<CustomerOrder> order = customerOrderRepository.findById(orderId);
-        return order.orElse(null);
+        if (order.isPresent())
+            return new ResponseEntity<>(order.get(), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("")
-    public void createOrder(@RequestBody CustomerOrder order) {
+    public ResponseEntity<CustomerOrder> createOrder(@RequestBody CustomerOrder order) {
         order.setId(null); // in case user pass id in body
-        customerOrderRepository.save(order);
+        var createdOrder = customerOrderRepository.save(order);
+        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
 
     @PutMapping("{orderId}")
-    public void modifyOrder(
+    public ResponseEntity<CustomerOrder> modifyOrder(
             @PathVariable Integer orderId,
             @RequestBody CustomerOrder modifiedOrder) {
         Optional<CustomerOrder> order = customerOrderRepository.findById(orderId);
@@ -45,11 +50,14 @@ public class OrderController {
             modifiedOrder.setId(orderId);
             // TODO: include list of order products
             customerOrderRepository.save(modifiedOrder);
+            return new ResponseEntity<>(modifiedOrder, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("{orderId}")
-    public void deleteOrder(@PathVariable Integer orderId) {
+    public ResponseEntity<Object> deleteOrder(@PathVariable Integer orderId) {
         customerOrderRepository.deleteById(orderId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

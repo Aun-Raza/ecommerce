@@ -1,9 +1,12 @@
 package com.aunraza.ecommercebackend.controllers;
 
+import com.aunraza.ecommercebackend.dtos.OrderProductWithOrderIdAndProductId;
 import com.aunraza.ecommercebackend.models.OrderProduct;
 import com.aunraza.ecommercebackend.repositories.CustomerOrderRepository;
 import com.aunraza.ecommercebackend.repositories.OrderProductRepository;
 import com.aunraza.ecommercebackend.repositories.ProductRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,43 +27,48 @@ public class OrderProductController {
     }
 
     @GetMapping("")
-    public List<OrderProduct> retrieveAllOrderProducts() {
-        return orderProductRepository.findAll();
+    public ResponseEntity<List<OrderProduct>> retrieveAllOrderProducts() {
+        return new ResponseEntity<>(orderProductRepository.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{orderProductId}")
-    public OrderProduct retrieveOrderProduct(@PathVariable Integer orderProductId) {
+    public ResponseEntity<OrderProduct> retrieveOrderProduct(@PathVariable Integer orderProductId) {
         Optional<OrderProduct> orderProduct = orderProductRepository.findById(orderProductId);
-        return orderProduct.orElse(null);
+        if (orderProduct.isPresent())
+            return new ResponseEntity<>(orderProduct.get(), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/{orderId}/{productId}")
-    public void createOrderProduct(
-            @PathVariable Integer orderId,
-            @PathVariable Integer productId,
-            @RequestBody OrderProduct orderProduct) {
+    @PostMapping("")
+    public ResponseEntity<OrderProduct> createOrderProduct(
+            @RequestBody OrderProductWithOrderIdAndProductId request) {
 
-        var foundOrder = customerOrderRepository.findById(orderId);
-        var foundProduct = productRepository.findById(productId);
+        var foundOrder = customerOrderRepository.findById(request.getOrderId());
+        var foundProduct = productRepository.findById(request.getProductId());
 
         if (foundOrder.isPresent() && foundProduct.isPresent()) {
-            orderProduct.setId(null); // in case user pass id in body
-            orderProductRepository.save(orderProduct);
+            request.getOrderProduct().setId(null); // in case user pass id in body
+            var createdOrderProduct = orderProductRepository.save(request.getOrderProduct());
+            return new ResponseEntity<>(createdOrderProduct, HttpStatus.CREATED);
         }
+        return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/{orderProductId}")
-    public void modifyOrderProduct(@PathVariable Integer orderProductId,
+    public ResponseEntity<OrderProduct> modifyOrderProduct(@PathVariable Integer orderProductId,
                                @RequestBody OrderProduct modifiedOrderProduct) {
         Optional<OrderProduct> orderProduct = orderProductRepository.findById(orderProductId);
         if (orderProduct.isPresent()) {
             modifiedOrderProduct.setId(orderProductId);
             orderProductRepository.save(modifiedOrderProduct);
+            return new ResponseEntity<>(modifiedOrderProduct, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{orderProductId}")
-    public void deleteOrderProduct(@PathVariable Integer orderProductId) {
+    public ResponseEntity<Object> deleteOrderProduct(@PathVariable Integer orderProductId) {
         orderProductRepository.deleteById(orderProductId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
