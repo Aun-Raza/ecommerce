@@ -47,8 +47,11 @@ public class OrderProductController {
         var foundProduct = productRepository.findById(request.getProductId());
 
         if (foundOrder.isPresent() && foundProduct.isPresent()) {
-            request.getOrderProduct().setId(null); // in case user pass id in body
-            var createdOrderProduct = orderProductRepository.save(request.getOrderProduct());
+            var orderProduct =request.getOrderProduct(); // in case user pass id in body
+            orderProduct.setId(null);
+            orderProduct.setOrder(foundOrder.get());
+            orderProduct.setProduct(foundProduct.get());
+            var createdOrderProduct = orderProductRepository.save(orderProduct);
             return new ResponseEntity<>(createdOrderProduct, HttpStatus.CREATED);
         }
         return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
