@@ -44,3 +44,9 @@ VALUES (40003, 699.99, 1, 20003, 30002); -- 1 Galaxy S
 
 INSERT INTO order_product (id, price, quantity, product_id, customer_order_id)
 VALUES (40004, 399.99, 1, 20004, 30002); -- 1 iPad (15th gen)
+
+INSERT INTO role (name)
+VALUES ('USER');
+
+INSERT INTO role (name)
+VALUES ('ADMIN');
