@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import Home from './components/pages/home';
 import Error from './components/pages/error';
 import ProductForm from './components/pages/forms/ProductForm';
+import AuthForm from './components/pages/forms/AuthForm';
 
 function App() {
   return (
@@ -11,7 +12,13 @@ function App() {
       <Navbar />
       <main className='container mx-auto'>
         <Switch>
-          <Route exact path='/' component={Home} />
+          <Route exact path='/'>
+            <AuthForm type='login' />
+          </Route>
+          <Route exact path='/register'>
+            <AuthForm type='register' />
+          </Route>
+          <Route exact path='/home' component={Home} />
           <Route exact path='/add-product'>
             <ProductForm operation='add' />
           </Route>

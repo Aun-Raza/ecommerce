@@ -20,6 +20,16 @@ export type ProductWithCategoryIdType = {
   categoryId: number;
 };
 
+export type UserCredentialsType = {
+  username: string;
+  password: string;
+};
+
+export type AuthResponseType = {
+  tokenType: string;
+  accessToken: string;
+};
+
 export const defaultProductWithCategoryId: ProductWithCategoryIdType = {
   product: {
     name: '',
@@ -27,4 +37,9 @@ export const defaultProductWithCategoryId: ProductWithCategoryIdType = {
     price: 10.0,
   },
   categoryId: 0,
+};
+
+export const defaultUserCredentials: UserCredentialsType = {
+  username: '',
+  password: '',
 };

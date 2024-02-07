@@ -1,15 +1,21 @@
 import axios from 'axios';
 import { CategoryType, ProductType, ProductWithCategoryIdType } from './types';
 axios.defaults.baseURL = 'http://localhost:8080/api';
+const token =
+  'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdW4iLCJpYXQiOjE3MDczMjY5NTAsImV4cCI6MTcwNzMyNzY1MH0.FpTsSjj69w7ytheF8fubCeDN3Rq7onQI1TjyChKuzfaJYgLugVO2zaRLQtGe6F00EwQ8Cr9XfjG-ZNWUwgL0kA';
 
 export async function retrieveAllCategories() {
-  const { data } = await axios.get<CategoryType[]>('/categories');
+  const { data } = await axios.get<CategoryType[]>('/categories', {
+    headers: { Authorization: 'Bearer ' + token },
+  });
   return data;
 }
 
 export async function retrieveAllProducts(category: string | null) {
   const endpoint = `/products${category ? `?category=${category}` : ''}`;
-  const { data } = await axios.get<ProductType[]>(endpoint);
+  const { data } = await axios.get<ProductType[]>(endpoint, {
+    headers: { Authorization: 'Bearer ' + token },
+  });
   return data;
 }
 
