@@ -5,6 +5,8 @@ import Home from './components/pages/home';
 import Error from './components/pages/error';
 import ProductForm from './components/pages/forms/ProductForm';
 import AuthForm from './components/pages/forms/AuthForm';
+import AuthRoute from './context/AuthRoute';
+import UnprotectedRoute from './context/UnprotectedRoute';
 
 function App() {
   return (
@@ -13,17 +15,29 @@ function App() {
       <main className='container mx-auto'>
         <Switch>
           <Route exact path='/'>
-            <AuthForm type='login' />
+            <UnprotectedRoute isAuth={false}>
+              <Home />
+            </UnprotectedRoute>
+          </Route>
+          <Route exact path='/login'>
+            <UnprotectedRoute isAuth={true}>
+              <AuthForm type='login' />
+            </UnprotectedRoute>
           </Route>
           <Route exact path='/register'>
-            <AuthForm type='register' />
+            <UnprotectedRoute isAuth={true}>
+              <AuthForm type='register' />
+            </UnprotectedRoute>
           </Route>
-          <Route exact path='/home' component={Home} />
           <Route exact path='/add-product'>
-            <ProductForm operation='add' />
+            <AuthRoute>
+              <ProductForm operation='add' />
+            </AuthRoute>
           </Route>
           <Route exact path='/modify-product/:id'>
-            <ProductForm operation='modify' />
+            <AuthRoute>
+              <ProductForm operation='modify' />
+            </AuthRoute>
           </Route>
           <Route path='*' component={Error} />
         </Switch>

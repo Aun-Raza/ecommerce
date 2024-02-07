@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ProductType } from '../../../../api/types';
-import { deleteProduct, retrieveAllProducts } from '../../../../api';
+import {
+  deleteProduct,
+  retrieveAllProducts,
+} from '../../../../api/products-api';
 import { Link } from 'react-router-dom';
 
 type ProductListProps = {

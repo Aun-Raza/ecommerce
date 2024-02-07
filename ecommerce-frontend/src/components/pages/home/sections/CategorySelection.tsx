@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { retrieveAllCategories } from '../../../../api';
+import { retrieveAllCategories } from '../../../../api/categories-api';
 import { CategoryType } from '../../../../api/types';
 
 type CategorySelectionProps = {

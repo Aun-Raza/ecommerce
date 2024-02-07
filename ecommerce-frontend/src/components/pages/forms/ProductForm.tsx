@@ -7,9 +7,9 @@ import {
 import {
   createProduct,
   retrieveProduct,
-  retrieveAllCategories,
   modifyProduct,
-} from '../../../api';
+} from '../../../api/products-api';
+import { retrieveAllCategories } from '../../../api/categories-api';
 import { useParams, useHistory } from 'react-router-dom';
 
 type ProductFormType = {

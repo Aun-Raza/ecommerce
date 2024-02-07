@@ -5,16 +5,19 @@ import {
   defaultUserCredentials,
 } from '../../../api/types';
 import { login, register } from '../../../api/auth-api';
+import { useAuthContext } from '../../../context/AuthContext';
+import apiClient from '../../../api/apiClient';
 
 type AuthFormType = {
   type: string;
 };
 
 const AuthForm = ({ type }: AuthFormType) => {
-  const history = useHistory();
   const [credential, setCredential] = useState<UserCredentialsType>(
     defaultUserCredentials
   );
+  const history = useHistory();
+  const authContext = useAuthContext();
 
   async function handleSubmit(ev: React.FormEvent) {
     ev.preventDefault();
@@ -22,12 +25,25 @@ const AuthForm = ({ type }: AuthFormType) => {
       const authResponse = await login(credential);
       if (!authResponse) {
         console.log('Login credential is invalid');
-      } else {
-        console.log(authResponse);
+        return;
+      }
+      const { accessToken } = authResponse;
+      if (accessToken) {
+        apiClient.interceptors.request.use((config) => {
+          config.headers.Authorization = `Bearer ${accessToken}`;
+          return config;
+        });
+        authContext.setUser({
+          username: credential.username,
+          isAuthenticated: true,
+          token: `Bearer ${accessToken}`,
+        });
+        localStorage.setItem('token', accessToken);
+        history.push('/');
       }
     } else {
       if (await register(credential)) {
-        history.push('/');
+        history.push('/login');
       }
     }
   }

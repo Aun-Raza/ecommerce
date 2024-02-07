@@ -1,6 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { defaultUser, useAuthContext } from '../../context/AuthContext';
 
 const Navbar = () => {
+  const { user, setUser } = useAuthContext();
+  const history = useHistory();
   return (
     <nav className='flex justify-between py-3 px-6 border-b'>
       <ul className='flex items-center gap-6'>
@@ -15,8 +18,21 @@ const Navbar = () => {
         </li>
       </ul>
       <ul>
+        {user.isAuthenticated && <li>{user.username}</li>}
         <li>
-          <Link to='/login'>Login</Link>
+          {!user.isAuthenticated && <Link to='/login'>Login</Link>}
+          {user.isAuthenticated && (
+            <p
+              className='cursor-pointer'
+              onClick={() => {
+                setUser(defaultUser);
+                localStorage.setItem('token', '');
+                history.push('/login');
+              }}
+            >
+              Logout
+            </p>
+          )}
         </li>
       </ul>
     </nav>
