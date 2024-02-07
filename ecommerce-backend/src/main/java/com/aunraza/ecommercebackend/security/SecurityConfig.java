@@ -9,23 +9,22 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private JwtAuthEntryPoint authEntryPoint;
     private CustomerUserDetailService userDetailService;
 
     @Autowired
-    public SecurityConfig(CustomerUserDetailService userDetailService) {
+    public SecurityConfig(JwtAuthEntryPoint authEntryPoint, CustomerUserDetailService userDetailService) {
+        this.authEntryPoint = authEntryPoint;
         this.userDetailService = userDetailService;
     }
 
@@ -38,6 +37,9 @@ public class SecurityConfig {
                     .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers("/api/auth/**").permitAll()
                     .anyRequest().authenticated())
+            .exceptionHandling(eh -> eh.authenticationEntryPoint(authEntryPoint))
+                .addFilterBefore(jwtAuthenticationFilter(),
+                        UsernamePasswordAuthenticationFilter.class)
             .sessionManagement(
                 (session) -> session.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS))
@@ -73,5 +75,10 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
     }
 }

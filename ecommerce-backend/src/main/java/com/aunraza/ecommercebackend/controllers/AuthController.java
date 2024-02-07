@@ -1,10 +1,12 @@
 package com.aunraza.ecommercebackend.controllers;
 
+import com.aunraza.ecommercebackend.dtos.AuthResponseDto;
 import com.aunraza.ecommercebackend.dtos.RegisterDto;
 import com.aunraza.ecommercebackend.models.Role;
 import com.aunraza.ecommercebackend.models.UserEntity;
 import com.aunraza.ecommercebackend.repositories.RoleRepository;
 import com.aunraza.ecommercebackend.repositories.UserRepository;
+import com.aunraza.ecommercebackend.security.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
 import java.util.Collections;
 
 @RestController
@@ -28,16 +29,19 @@ public class AuthController {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    private JwtGenerator jwtGenerator;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager,
                           UserRepository userRepository,
                           RoleRepository roleRepository,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          JwtGenerator jwtGenerator) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtGenerator = jwtGenerator;
     }
 
     @PostMapping("register")
@@ -55,10 +59,11 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<String> login(@RequestBody RegisterDto loginDto) {
+    public ResponseEntity<AuthResponseDto> login(@RequestBody RegisterDto loginDto) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("User signed success!", HttpStatus.OK);
+        String token = jwtGenerator.generateToken(authentication);
+        return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
     }
 }
