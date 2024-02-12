@@ -23,6 +23,7 @@ const ProductForm = ({ operation }: ProductFormType) => {
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const { id: paramId } = useParams<{ id: string }>();
   const history = useHistory();
+  const token = localStorage.getItem('token') as string;
 
   useEffect(() => {
     async function init() {
@@ -66,9 +67,9 @@ const ProductForm = ({ operation }: ProductFormType) => {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (operation === 'add') {
-      await createProduct(body);
+      await createProduct(body, token);
     } else if (operation === 'modify' && paramId) {
-      await modifyProduct(paramId, body);
+      await modifyProduct(paramId, body, token);
     }
     history.push('/');
   }

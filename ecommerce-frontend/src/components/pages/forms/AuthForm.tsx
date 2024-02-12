@@ -29,16 +29,11 @@ const AuthForm = ({ type }: AuthFormType) => {
       }
       const { accessToken } = authResponse;
       if (accessToken) {
-        apiClient.interceptors.request.use((config) => {
-          config.headers.Authorization = `Bearer ${accessToken}`;
-          return config;
-        });
         authContext.setUser({
           username: credential.username,
           isAuthenticated: true,
-          token: `Bearer ${accessToken}`,
         });
-        localStorage.setItem('token', accessToken);
+        localStorage.setItem('token', `Bearer ${accessToken}`);
         history.push('/');
       }
     } else {

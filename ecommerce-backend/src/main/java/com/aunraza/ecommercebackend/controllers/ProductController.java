@@ -5,9 +5,13 @@ import com.aunraza.ecommercebackend.models.Category;
 import com.aunraza.ecommercebackend.models.Product;
 import com.aunraza.ecommercebackend.repositories.CategoryRepository;
 import com.aunraza.ecommercebackend.repositories.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +22,8 @@ import java.util.Optional;
 public class ProductController {
     private ProductRepository productRepository;
     private CategoryRepository categoryRepository;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public ProductController(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
@@ -44,7 +50,10 @@ public class ProductController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Product> createProduct(@RequestBody ProductWithCategoryId request) {
+    public ResponseEntity<Product> createProduct(@RequestBody ProductWithCategoryId request, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        logger.info(userDetails.toString());
+
         Optional<Category> category = categoryRepository.findById(request.getCategoryId());
         if (category.isPresent()) {
             var product = request.getProduct();

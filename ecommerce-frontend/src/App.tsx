@@ -7,6 +7,7 @@ import ProductForm from './components/pages/forms/ProductForm';
 import AuthForm from './components/pages/forms/AuthForm';
 import AuthRoute from './context/AuthRoute';
 import UnprotectedRoute from './context/UnprotectedRoute';
+import Cart from './components/pages/cart/Cart';
 
 function App() {
   return (
@@ -37,6 +38,11 @@ function App() {
           <Route exact path='/modify-product/:id'>
             <AuthRoute>
               <ProductForm operation='modify' />
+            </AuthRoute>
+          </Route>
+          <Route exact path='/cart'>
+            <AuthRoute>
+              <Cart />
             </AuthRoute>
           </Route>
           <Route path='*' component={Error} />

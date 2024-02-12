@@ -20,6 +20,10 @@ public class Product {
     @JsonIgnore
     private List<OrderProduct> orderProducts;
 
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    List<CartProduct> cardProducts;
+
     public Integer getId() {
         return id;
     }
@@ -68,14 +72,23 @@ public class Product {
         this.orderProducts = orderProducts;
     }
 
+    public List<CartProduct> getCardProducts() {
+        return cardProducts;
+    }
+
+    public void setCardProducts(List<CartProduct> cardProducts) {
+        this.cardProducts = cardProducts;
+    }
+
     public Product() {}
 
-    public Product(Integer id, String name, String description, Double price, Category category, List<OrderProduct> orderProducts) {
+    public Product(Integer id, String name, String description, Double price, Category category, List<OrderProduct> orderProducts, List<CartProduct> cardProducts) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
         this.orderProducts = orderProducts;
+        this.cardProducts = cardProducts;
     }
 }

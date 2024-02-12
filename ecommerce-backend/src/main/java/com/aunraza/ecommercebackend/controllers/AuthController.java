@@ -2,8 +2,10 @@ package com.aunraza.ecommercebackend.controllers;
 
 import com.aunraza.ecommercebackend.dtos.AuthResponseDto;
 import com.aunraza.ecommercebackend.dtos.RegisterDto;
+import com.aunraza.ecommercebackend.models.Cart;
 import com.aunraza.ecommercebackend.models.Role;
 import com.aunraza.ecommercebackend.models.UserEntity;
+import com.aunraza.ecommercebackend.repositories.CartRepository;
 import com.aunraza.ecommercebackend.repositories.RoleRepository;
 import com.aunraza.ecommercebackend.repositories.UserRepository;
 import com.aunraza.ecommercebackend.security.JwtGenerator;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 @RestController
@@ -28,6 +31,8 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+
+    private CartRepository cartRepository;
     private PasswordEncoder passwordEncoder;
     private JwtGenerator jwtGenerator;
 
@@ -35,11 +40,12 @@ public class AuthController {
     public AuthController(AuthenticationManager authenticationManager,
                           UserRepository userRepository,
                           RoleRepository roleRepository,
-                          PasswordEncoder passwordEncoder,
+                          CartRepository cartRepository, PasswordEncoder passwordEncoder,
                           JwtGenerator jwtGenerator) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.cartRepository = cartRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
     }
@@ -52,9 +58,22 @@ public class AuthController {
         UserEntity user = new UserEntity();
         user.setUsername(registerDto.getUsername());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+
         Role roles = roleRepository.findByName("USER").get();
-        user.setRoles(Collections.singletonList(roles));
+        user.setRoles(new ArrayList<>(Collections.singletonList(roles)));
+
+        // Save the user to the database
         userRepository.save(user);
+
+        var cart = new Cart();
+        cart.setUser(user);
+
+        cartRepository.save(cart);
+
+        // Update the user's cart
+        user.setCart(cart);
+        userRepository.save(user);
+
         return new ResponseEntity<>("User registered success!", HttpStatus.OK);
     }
 

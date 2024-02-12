@@ -38,6 +38,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET).permitAll()
                     .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/cart/**").authenticated()
                     .anyRequest().authenticated())
             .exceptionHandling(eh -> eh.authenticationEntryPoint(authEntryPoint))
                 .addFilterBefore(jwtAuthenticationFilter(),

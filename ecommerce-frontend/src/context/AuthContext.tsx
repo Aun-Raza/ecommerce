@@ -10,7 +10,6 @@ import { jwtDecode } from 'jwt-decode';
 interface UserType {
   username: string;
   isAuthenticated: boolean;
-  token: string;
 }
 
 type AuthContextType = {
@@ -21,7 +20,6 @@ type AuthContextType = {
 export const defaultUser: UserType = {
   username: '',
   isAuthenticated: false,
-  token: '',
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -46,9 +44,13 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     if (token) {
       const { sub } = jwtDecode<{ sub: string }>(token);
       setUser({
-        token: token,
         username: sub,
         isAuthenticated: true,
+      });
+    } else {
+      setUser({
+        username: '',
+        isAuthenticated: false,
       });
     }
   }, []);

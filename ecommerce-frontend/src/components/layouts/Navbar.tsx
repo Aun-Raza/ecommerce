@@ -17,23 +17,26 @@ const Navbar = () => {
           <Link to='/contact-us'>Contact Us</Link>
         </li>
       </ul>
-      <ul>
-        {user.isAuthenticated && <li>{user.username}</li>}
-        <li>
-          {!user.isAuthenticated && <Link to='/login'>Login</Link>}
-          {user.isAuthenticated && (
-            <p
-              className='cursor-pointer'
-              onClick={() => {
-                setUser(defaultUser);
-                localStorage.setItem('token', '');
-                history.push('/login');
-              }}
-            >
-              Logout
-            </p>
-          )}
-        </li>
+      <ul className='flex items-center gap-4'>
+        {user.isAuthenticated && (
+          <>
+            <Link to='/cart'>Cart</Link>
+            <li>
+              <span
+                className='cursor-pointer'
+                onClick={() => {
+                  setUser(defaultUser);
+                  localStorage.setItem('token', '');
+                  history.push('/login');
+                }}
+              >
+                Logout
+              </span>
+            </li>
+            <li>{user.username}</li>
+          </>
+        )}
+        {!user.isAuthenticated && <Link to='/login'>Login</Link>}
       </ul>
     </nav>
   );

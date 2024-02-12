@@ -19,6 +19,9 @@ public class UserEntity {
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles = new ArrayList<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JoinColumn(name = "card_id", referencedColumnName = "id")
+    private Cart cart;
 
     public int getId() {
         return id;
@@ -52,11 +55,20 @@ public class UserEntity {
         this.roles = roles;
     }
 
-    public UserEntity(int id, String username, String password, List<Role> roles) {
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public UserEntity(int id, String username, String password, List<Role> roles, Cart cart) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.roles = roles;
+        this.cart = cart;
     }
 
     public UserEntity() {}

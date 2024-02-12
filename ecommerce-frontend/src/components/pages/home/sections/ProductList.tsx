@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
-import { ProductType } from '../../../../api/types';
+import {
+  CartProductWithProductIdType,
+  ProductType,
+} from '../../../../api/types';
 import {
   deleteProduct,
   retrieveAllProducts,
 } from '../../../../api/products-api';
 import { Link } from 'react-router-dom';
+import { createCartProduct } from '../../../../api/cart-api';
 
 type ProductListProps = {
   category: string | null;
@@ -12,7 +16,7 @@ type ProductListProps = {
 
 const ProductList = ({ category }: ProductListProps) => {
   const [products, setProducts] = useState<ProductType[]>([]);
-
+  const token = localStorage.getItem('token') as string;
   useEffect(() => {
     async function init() {
       const data = await retrieveAllProducts(null);
@@ -22,28 +26,44 @@ const ProductList = ({ category }: ProductListProps) => {
   }, []);
 
   async function handleProductDelete(productId: number) {
-    await deleteProduct(productId.toString());
+    await deleteProduct(productId.toString(), token);
     const filteredProducts = products.filter(
       (product) => product.id !== productId
     );
     setProducts(filteredProducts);
   }
 
+  async function handleAddProductToCart(product: ProductType) {
+    const body: CartProductWithProductIdType = {
+      cartProduct: {
+        price: product.price,
+        quantity: 1,
+      },
+      productId: product.id,
+    };
+    await createCartProduct(body, token);
+  }
+
   function renderProducts(products: ProductType[]) {
-    return products.map(({ id, name, description, price }) => (
-      <li key={id} className='h-fit border p-2'>
-        <h3>{name}</h3>
-        <p>{description}</p>
-        <p>Price ${price.toFixed(2)}</p>
+    return products.map((product) => (
+      <li key={product.id} className='h-fit border p-2'>
+        <h3>{product.name}</h3>
+        <p>{product.description}</p>
+        <p>Price ${product.price.toFixed(2)}</p>
         <div className='flex flex-col gap-2 mt-2'>
-          <button className='primary w-full'>Add to Cart</button>
+          <button
+            className='primary w-full'
+            onClick={() => handleAddProductToCart(product)}
+          >
+            Add to Cart
+          </button>
           <div className='flex gap-2'>
             <button className='warning w-full'>
-              <Link to={`/modify-product/${id}`}>Modify</Link>
+              <Link to={`/modify-product/${product.id}`}>Modify</Link>
             </button>
             <button
               className='danger w-full'
-              onClick={() => handleProductDelete(id)}
+              onClick={() => handleProductDelete(product.id)}
             >
               Delete
             </button>
