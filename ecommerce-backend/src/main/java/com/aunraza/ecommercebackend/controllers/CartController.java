@@ -66,14 +66,16 @@ public class CartController {
             cartProduct.setPrice(newPrice);
         }
         else {
-            cartProduct = request.getCartProduct();
             var optionalProduct = productRepository.findById(request.getProductId());
             if (optionalProduct.isEmpty()) {
                 return new ResponseEntity<>("Product does not exist in database", HttpStatus.NOT_FOUND);
             }
             var product = optionalProduct.get();
+            cartProduct = new CartProduct();
             cartProduct.setProduct(product);
             cartProduct.setCart(cart);
+            cartProduct.setQuantity(request.getQuantity());
+            cartProduct.setPrice(request.getPrice());
         }
         cartProductRepository.save(cartProduct);
         entityManager.refresh(cart);

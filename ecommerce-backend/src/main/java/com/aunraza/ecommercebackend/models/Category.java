@@ -1,5 +1,6 @@
 package com.aunraza.ecommercebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,6 +15,7 @@ public class Category {
     private Integer id;
     private String name;
     @OneToMany(mappedBy = "category")
+    @JsonBackReference
     private List<Product> products;
 
     public Integer getId() {

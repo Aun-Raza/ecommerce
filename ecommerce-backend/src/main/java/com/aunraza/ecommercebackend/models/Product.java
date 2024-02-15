@@ -1,6 +1,8 @@
 package com.aunraza.ecommercebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,6 +16,7 @@ public class Product {
     private String description;
     private Double price;
     @ManyToOne
+    @JsonManagedReference
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
-import {
-  CartProductWithProductIdType,
-  ProductType,
-} from '../../../../api/types';
+import { ProductType } from '../../../../api/types/product';
 import {
   deleteProduct,
   retrieveAllProducts,
 } from '../../../../api/products-api';
 import { Link } from 'react-router-dom';
 import { createCartProduct } from '../../../../api/cart-api';
+import { CartProductWithProductIdDtoType } from '../../../../api/types/cart';
 
 type ProductListProps = {
   category: string | null;
@@ -34,11 +32,9 @@ const ProductList = ({ category }: ProductListProps) => {
   }
 
   async function handleAddProductToCart(product: ProductType) {
-    const body: CartProductWithProductIdType = {
-      cartProduct: {
-        price: product.price,
-        quantity: 1,
-      },
+    const body: CartProductWithProductIdDtoType = {
+      price: product.price,
+      quantity: 1,
       productId: product.id,
     };
     await createCartProduct(body, token);

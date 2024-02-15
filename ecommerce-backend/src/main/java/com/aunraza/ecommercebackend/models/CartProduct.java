@@ -1,6 +1,7 @@
 package com.aunraza.ecommercebackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,7 +17,6 @@ public class CartProduct {
     private Cart cart;
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonIgnore
     private Product product;
 
     public Integer getId() {

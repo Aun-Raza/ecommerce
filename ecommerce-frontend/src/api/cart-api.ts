@@ -1,5 +1,5 @@
 import apiClient, { auth } from './apiClient';
-import { CartProductWithProductIdType, CartType } from './types';
+import { CartProductWithProductIdDtoType, CartType } from './types/cart';
 
 export async function retrieveCartProducts(token: string) {
   try {
@@ -11,7 +11,7 @@ export async function retrieveCartProducts(token: string) {
 }
 
 export async function createCartProduct(
-  body: CartProductWithProductIdType,
+  body: CartProductWithProductIdDtoType,
   token: string
 ) {
   try {

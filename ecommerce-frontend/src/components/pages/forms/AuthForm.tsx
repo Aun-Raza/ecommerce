@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import {
   UserCredentialsType,
   defaultUserCredentials,
-} from '../../../api/types';
+} from '../../../api/types/auth';
 import { login, register } from '../../../api/auth-api';
 import { useAuthContext } from '../../../context/AuthContext';
 import apiClient from '../../../api/apiClient';

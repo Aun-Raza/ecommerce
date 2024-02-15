@@ -1,5 +1,5 @@
 import apiClient from './apiClient';
-import { AuthResponseType, UserCredentialsType } from './types';
+import { AuthResponseType, UserCredentialsType } from './types/auth';
 
 export async function login(credential: UserCredentialsType) {
   try {

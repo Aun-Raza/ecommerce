@@ -1,5 +1,6 @@
 package com.aunraza.ecommercebackend.controllers;
 
+import com.aunraza.ecommercebackend.dtos.categories.CategoryDto;
 import com.aunraza.ecommercebackend.models.Category;
 import com.aunraza.ecommercebackend.repositories.CategoryRepository;
 import org.springframework.http.HttpStatus;
@@ -33,18 +34,21 @@ public class CategoryController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-        category.setId(null); // in case user pass id in body
-        var createdCategory = categoryRepository.save(category);
+    public ResponseEntity<Category> createCategory(@RequestBody CategoryDto category) {
+        var newCategory = new Category();
+        newCategory.setId(null);
+        newCategory.setName(category.getName());
+        var createdCategory = categoryRepository.save(newCategory);
         return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
     @PutMapping("/{categoryId}")
     public ResponseEntity<Category> modifyCategory(@PathVariable Integer categoryId,
-                               @RequestBody Category modifiedCategory) {
-        Optional<Category> category = categoryRepository.findById(categoryId);
-        if (category.isPresent()) {
-            modifiedCategory.setId(categoryId);
+                               @RequestBody CategoryDto category) {
+        Optional<Category> foundCategory = categoryRepository.findById(categoryId);
+        if (foundCategory.isPresent()) {
+            var modifiedCategory = foundCategory.get();
+            modifiedCategory.setName(category.getName());
             categoryRepository.save(modifiedCategory);
             return new ResponseEntity<>(modifiedCategory, HttpStatus.OK);
         }

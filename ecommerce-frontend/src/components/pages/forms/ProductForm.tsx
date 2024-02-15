@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import {
-  CategoryType,
   ProductWithCategoryIdType,
   defaultProductWithCategoryId,
-} from '../../../api/types';
+} from '../../../api/types/product';
 import {
   createProduct,
   retrieveProduct,
@@ -11,6 +10,7 @@ import {
 } from '../../../api/products-api';
 import { retrieveAllCategories } from '../../../api/categories-api';
 import { useParams, useHistory } from 'react-router-dom';
+import { CategoryType } from '../../../api/types/category';
 
 type ProductFormType = {
   operation: string;
@@ -41,7 +41,9 @@ const ProductForm = ({ operation }: ProductFormType) => {
           paramId
         );
         setBody({
-          product: { name, description, price },
+          name,
+          description,
+          price,
           categoryId: category.id,
         });
       }
@@ -59,7 +61,7 @@ const ProductForm = ({ operation }: ProductFormType) => {
     } else {
       const bodyClone = { ...body };
       // @ts-ignore
-      bodyClone.product[name] = value;
+      bodyClone[name] = value;
       setBody(bodyClone);
     }
   }
@@ -82,7 +84,7 @@ const ProductForm = ({ operation }: ProductFormType) => {
         <input
           id='name'
           name='name'
-          value={body.product.name}
+          value={body.name}
           type='text'
           onChange={handleBodyChange}
         />
@@ -92,7 +94,7 @@ const ProductForm = ({ operation }: ProductFormType) => {
         <input
           id='description'
           name='description'
-          value={body.product.description}
+          value={body.description}
           onChange={handleBodyChange}
         />
       </fieldset>
@@ -102,7 +104,7 @@ const ProductForm = ({ operation }: ProductFormType) => {
           id='price'
           type='number'
           name='price'
-          value={body.product.price}
+          value={body.price}
           onChange={handleBodyChange}
         />
       </fieldset>

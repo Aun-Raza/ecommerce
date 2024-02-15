@@ -1,6 +1,6 @@
 package com.aunraza.ecommercebackend.controllers;
 
-import com.aunraza.ecommercebackend.dtos.ProductWithCategoryId;
+import com.aunraza.ecommercebackend.dtos.ProductWithCategoryIdDto;
 import com.aunraza.ecommercebackend.models.Category;
 import com.aunraza.ecommercebackend.models.Product;
 import com.aunraza.ecommercebackend.repositories.CategoryRepository;
@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,16 +49,18 @@ public class ProductController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Product> createProduct(@RequestBody ProductWithCategoryId request, Authentication authentication) {
+    public ResponseEntity<Product> createProduct(@RequestBody ProductWithCategoryIdDto request, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         logger.info(userDetails.toString());
 
         Optional<Category> category = categoryRepository.findById(request.getCategoryId());
         if (category.isPresent()) {
-            var product = request.getProduct();
-            product.setId(null); // in case user pass id in body
-            product.setCategory(category.get());
-            var createdProduct = productRepository.save(product);
+            var newProduct = new Product();
+            newProduct.setName(request.getName());
+            newProduct.setDescription(request.getDescription());
+            newProduct.setPrice(request.getPrice());
+            newProduct.setCategory(category.get());
+            var createdProduct = productRepository.save(newProduct);
             return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -68,12 +69,14 @@ public class ProductController {
     @PutMapping("/{productId}")
     public ResponseEntity<Product> modifyProduct(
             @PathVariable Integer productId,
-           @RequestBody ProductWithCategoryId request) {
+           @RequestBody ProductWithCategoryIdDto request) {
         Optional<Category> category = categoryRepository.findById(request.getCategoryId());
-        Optional<Product> product = productRepository.findById(productId);
-        if (category.isPresent() && product.isPresent()) {
-            var modifiedProduct = request.getProduct();
-            modifiedProduct.setId(productId);
+        Optional<Product> foundProduct = productRepository.findById(productId);
+        if (category.isPresent() && foundProduct.isPresent()) {
+            var modifiedProduct = foundProduct.get();
+            modifiedProduct.setName(request.getName());
+            modifiedProduct.setDescription(request.getDescription());
+            modifiedProduct.setPrice(request.getPrice());
             modifiedProduct.setCategory(category.get());
             productRepository.save(modifiedProduct);
             return new ResponseEntity<>(HttpStatus.OK);

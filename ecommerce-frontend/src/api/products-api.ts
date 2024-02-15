@@ -1,5 +1,5 @@
 import apiClient, { auth } from './apiClient';
-import { ProductType, ProductWithCategoryIdType } from './types';
+import { ProductType, ProductWithCategoryIdType } from './types/product';
 
 export async function retrieveAllProducts(category: string | null) {
   const endpoint = `/products${category ? `?category=${category}` : ''}`;
