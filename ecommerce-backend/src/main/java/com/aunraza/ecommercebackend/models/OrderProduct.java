@@ -1,6 +1,8 @@
 package com.aunraza.ecommercebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,12 +17,12 @@ public class OrderProduct {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonIgnore
+    @JsonManagedReference
     private Product product;
 
     @ManyToOne
     @JoinColumn(name = "customer_order_id")
-    @JsonIgnore
+    @JsonBackReference
     private CustomerOrder order;
 
     public Integer getId() {

@@ -1,9 +1,8 @@
 package com.aunraza.ecommercebackend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -17,7 +16,13 @@ public class CustomerOrder {
     private Double total;
 
     @OneToMany(mappedBy = "order")
+    @JsonManagedReference
     private List<OrderProduct> products;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private UserEntity user;
 
     public Integer getId() {
         return id;
@@ -59,12 +64,21 @@ public class CustomerOrder {
         this.products = products;
     }
 
-    public CustomerOrder(Integer id, Double subtotal, Double tax, Double total, List<OrderProduct> products) {
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public CustomerOrder(Integer id, Double subtotal, Double tax, Double total, List<OrderProduct> products, UserEntity user) {
         this.id = id;
         this.subtotal = subtotal;
         this.tax = tax;
         this.total = total;
         this.products = products;
+        this.user = user;
     }
 
     public CustomerOrder() {}

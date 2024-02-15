@@ -20,6 +20,7 @@ const Navbar = () => {
       <ul className='flex items-center gap-4'>
         {user.isAuthenticated && (
           <>
+            <Link to='/orders'>Orders</Link>
             <Link to='/cart'>Cart</Link>
             <li>
               <span

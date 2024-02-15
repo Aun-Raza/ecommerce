@@ -20,7 +20,7 @@ public class Product {
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonBackReference
     private List<OrderProduct> orderProducts;
 
     @OneToMany(mappedBy = "product")

@@ -24,6 +24,9 @@ public class UserEntity {
     @JoinColumn(name = "card_id", referencedColumnName = "id")
     private Cart cart;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<CustomerOrder> orders;
+
     public int getId() {
         return id;
     }
@@ -64,12 +67,21 @@ public class UserEntity {
         this.cart = cart;
     }
 
-    public UserEntity(int id, String username, String password, List<Role> roles, Cart cart) {
+    public List<CustomerOrder> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<CustomerOrder> orders) {
+        this.orders = orders;
+    }
+
+    public UserEntity(int id, String username, String password, List<Role> roles, Cart cart, List<CustomerOrder> orders) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.roles = roles;
         this.cart = cart;
+        this.orders = orders;
     }
 
     public UserEntity() {}

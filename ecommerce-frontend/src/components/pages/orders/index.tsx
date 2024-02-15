@@ -1,28 +1,22 @@
 import { useEffect, useState } from 'react';
-import { checkoutCart, retrieveCartProducts } from '../../../api/cart-api';
-import { CartType, defaultCart } from '../../../api/types/cart';
+import { retrieveAllOrders } from '../../../api/order-api';
+import { OrderType } from '../../../api/types/order';
+import { Link } from 'react-router-dom';
 
-const Cart = () => {
-  const [cart, setCart] = useState<CartType>(defaultCart);
+const OrderList = () => {
+  const [orders, setOrders] = useState<OrderType[]>([]);
   const token = localStorage.getItem('token') as string;
   useEffect(() => {
     async function init() {
-      const data = (await retrieveCartProducts(token)) as CartType;
-      setCart(data);
+      const data = (await retrieveAllOrders(token)) as OrderType[];
+      console.log(data);
+      setOrders(data);
     }
     init();
   }, []);
-
-  async function checkout() {
-    // console.log(cart);
-    if (!cart.products) return;
-    const emptyCart = (await checkoutCart(token)) as CartType;
-    console.log(emptyCart);
-    setCart(emptyCart);
-  }
-
   return (
     <>
+      <h1>Your Orders</h1>
       <div className='relative overflow-x-auto shadow-md sm:rounded-lg my-4'>
         <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
           <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
@@ -31,41 +25,44 @@ const Cart = () => {
                 Id
               </th>
               <th scope='col' className='px-6 py-3'>
-                Product
+                Subtotal
               </th>
               <th scope='col' className='px-6 py-3'>
-                Price
+                Tax
               </th>
               <th scope='col' className='px-6 py-3'>
-                Quantity
+                Total
               </th>
+              <th scope='col' className='px-6 py-3'></th>
             </tr>
           </thead>
           <tbody>
-            {cart.products.map((productCart) => (
+            {orders.map((order) => (
               <tr
-                key={productCart.id}
+                key={order.id}
                 className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700'
               >
                 <th
                   scope='row'
                   className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'
                 >
-                  {productCart.id}
+                  {order.id}
                 </th>
-                <td className='px-6 py-4'>{productCart.product.name}</td>
-                <td className='px-6 py-4'>${productCart.price}</td>
-                <td className='px-6 py-4'>{productCart.quantity}</td>
+                <td className='px-6 py-4'>${order.subtotal}</td>
+                <td className='px-6 py-4'>${order.tax}</td>
+                <td className='px-6 py-4'>${order.total}</td>
+                <td className='px-6 py-4'>
+                  <Link to={`/orders/${order.id}`}>
+                    <button>View</button>
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <button className='primary' onClick={checkout}>
-        Checkout
-      </button>
     </>
   );
 };
 
-export default Cart;
+export default OrderList;

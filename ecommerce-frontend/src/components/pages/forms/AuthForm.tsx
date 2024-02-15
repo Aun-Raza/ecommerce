@@ -73,7 +73,7 @@ const AuthForm = ({ type }: AuthFormType) => {
       <span
         className='block cursor-pointer'
         onClick={() => {
-          history.push(type === 'login' ? '/register' : '/');
+          history.push(type === 'login' ? '/register' : '/login');
         }}
       >
         {type === 'login'

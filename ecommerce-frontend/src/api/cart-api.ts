@@ -21,3 +21,15 @@ export async function createCartProduct(
     console.error(error);
   }
 }
+
+export async function checkoutCart(token: string) {
+  try {
+    const { data } = await apiClient.get<CartType>(
+      '/cart/checkout',
+      auth(token)
+    );
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
