@@ -15,6 +15,8 @@ public class Product {
     private String name;
     private String description;
     private Double price;
+
+    private String imageUrl;
     @ManyToOne
     @JsonManagedReference
     private Category category;
@@ -59,6 +61,14 @@ public class Product {
         this.price = price;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public Category getCategory() {
         return category;
     }
@@ -85,11 +95,12 @@ public class Product {
 
     public Product() {}
 
-    public Product(Integer id, String name, String description, Double price, Category category, List<OrderProduct> orderProducts, List<CartProduct> cardProducts) {
+    public Product(Integer id, String name, String description, Double price, String imageUrl, Category category, List<OrderProduct> orderProducts, List<CartProduct> cardProducts) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.imageUrl = imageUrl;
         this.category = category;
         this.orderProducts = orderProducts;
         this.cardProducts = cardProducts;

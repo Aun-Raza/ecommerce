@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/auth")
@@ -59,8 +60,19 @@ public class AuthController {
         user.setUsername(registerDto.getUsername());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-        Role roles = roleRepository.findByName("USER").get();
-        user.setRoles(new ArrayList<>(Collections.singletonList(roles)));
+        Optional<Role> optionalRole = roleRepository.findByName("USER");
+        Role role;
+        if (optionalRole.isPresent()) {
+            role = optionalRole.get();
+        } else {
+            // Create a new "USER" and "ADMIN" roles if they do not exist
+            var userRole = new Role();
+            userRole.setName("USER");
+            var adminRole = new Role();
+            adminRole.setName("ADMIN");
+            roleRepository.save(userRole);
+            roleRepository.save(adminRole);
+        }
 
         // Save the user to the database
         userRepository.save(user);

@@ -1,5 +1,6 @@
 package com.aunraza.ecommercebackend.s3;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -13,9 +14,9 @@ import java.util.Objects;
 
 @Service
 public class S3Service {
-    private final AmazonS3Client s3Client;
+    private final AmazonS3 s3Client;
 
-    public S3Service(AmazonS3Client s3Client) {
+    public S3Service(AmazonS3 s3Client) {
         this.s3Client = s3Client;
     }
 
