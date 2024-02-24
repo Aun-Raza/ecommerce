@@ -2,6 +2,14 @@ h1 {
   @apply text-4xl font-semibold mt-4 mb-2;
 }
 
+h2 {
+  @apply text-3xl mt-3;
+}
+
+h3 {
+  @apply text-2xl mt-3;
+}
+
 fieldset {
   @apply flex w-full flex-wrap md:flex-nowrap gap-4;
 }
@@ -15,7 +23,7 @@ form {
 }
 
 section {
-  @apply container mx-auto;
+  @apply container mx-auto mt-5;
 }
 
 .category-selector-item {

@@ -21,7 +21,7 @@ const CategorySelection = ({
     init();
   }, []);
   return (
-    <aside className='w-1/4 h-fit flex flex-col gap-1'>
+    <aside className='md:w-1/4  h-fit flex flex-col gap-1'>
       <div
         key={0}
         className={`category-selector-item ${

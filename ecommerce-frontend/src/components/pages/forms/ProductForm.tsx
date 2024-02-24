@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ProductWithCategoryIdType,
   defaultProductWithCategoryId,
@@ -11,6 +11,14 @@ import {
 import { retrieveAllCategories } from '../../../api/categories-api';
 import { useParams, useHistory } from 'react-router-dom';
 import { CategoryType } from '../../../api/types/category';
+import {
+  Button,
+  Image,
+  Input,
+  Select,
+  SelectItem,
+  Textarea,
+} from '@nextui-org/react';
 
 type ProductFormType = {
   operation: string;
@@ -25,6 +33,12 @@ const ProductForm = ({ operation }: ProductFormType) => {
   const { id: paramId } = useParams<{ id: string }>();
   const history = useHistory();
   const token = localStorage.getItem('token') as string;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const triggerFileInput = () => {
+    // Trigger the click event on the hidden file input
+    fileInputRef?.current?.click();
+  };
 
   useEffect(() => {
     async function init() {
@@ -98,47 +112,69 @@ const ProductForm = ({ operation }: ProductFormType) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className='mt-2 p-3 border'>
-      <h2>Add Product</h2>
-      <fieldset>
-        <label htmlFor='file'>File</label>
-        <input id='file' name='file' type='file' onChange={handleFileChange} />
-        {body.imageUrl && (
-          <img src={body.imageUrl} className='w-48 h-48' alt='' />
-        )}
-      </fieldset>
-      <fieldset>
-        <label htmlFor='name'>Name</label>
+    <section>
+      <h1>{operation === 'add' ? 'Add' : 'Modify'} Product</h1>
+      <form onSubmit={handleSubmit} className='mt-2 p-3 border'>
         <input
-          id='name'
-          name='name'
-          value={body.name}
-          type='text'
-          onChange={handleBodyChange}
+          ref={fileInputRef}
+          id='file'
+          name='file'
+          type='file'
+          hidden
+          onChange={handleFileChange}
         />
-      </fieldset>
-      <fieldset>
-        <label htmlFor='description'>Description</label>
-        <input
+        <Button
+          onClick={triggerFileInput}
+          color='primary'
+          variant='bordered'
+          className='shadow-lg w-fit'
+        >
+          Upload Image
+        </Button>
+        {body.imageUrl && (
+          <Image src={body.imageUrl} className='w-48 h-48' alt='' />
+        )}
+        <fieldset className='flex flex-col md:flex-row gap-2'>
+          <Input
+            id='name'
+            name='name'
+            value={body.name}
+            label='Name'
+            type='text'
+            onChange={handleBodyChange}
+          />
+          <Input
+            id='price'
+            type='number'
+            name='price'
+            label='Price'
+            value={body.price.toString()}
+            onChange={handleBodyChange}
+          />
+        </fieldset>
+        <Textarea
           id='description'
           name='description'
+          label='Description'
           value={body.description}
           onChange={handleBodyChange}
         />
-      </fieldset>
-      <fieldset>
-        <label htmlFor='price'>Price</label>
-        <input
-          id='price'
-          type='number'
-          name='price'
-          value={body.price}
-          onChange={handleBodyChange}
-        />
-      </fieldset>
-      <fieldset>
+
         <label htmlFor='category'>Category</label>
-        <select
+        <Select
+          items={categories}
+          label='Categories'
+          name='category'
+          placeholder='Select a category'
+          onChange={handleBodyChange}
+          className='max-w-xs'
+          value={body.categoryId || ''}
+        >
+          {(category) => (
+            <SelectItem key={category.id}>{category.name}</SelectItem>
+          )}
+        </Select>
+        {/* <select
           id='category'
           value={body.categoryId || ''}
           name='category'
@@ -151,12 +187,12 @@ const ProductForm = ({ operation }: ProductFormType) => {
               {category.name}
             </option>
           ))}
-        </select>
-      </fieldset>
-      <button type='submit' className='primary w-full mt-2'>
-        Submit
-      </button>
-    </form>
+        </select> */}
+        <Button type='submit' color='primary' className='w-full mt-2'>
+          Submit
+        </Button>
+      </form>
+    </section>
   );
 };
 

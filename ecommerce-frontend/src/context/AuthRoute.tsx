@@ -1,20 +1,11 @@
 import { PropsWithChildren } from 'react';
 import { useHistory } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
-
-function isTokenExpired(token: string) {
-  if (!token) return false;
-  const { exp } = jwtDecode<{ exp: number }>(token);
-  const now = Math.floor(Date.now() / 1000);
-  if (exp > now) return true;
-  localStorage.setItem('token', '');
-  return false;
-}
+import { isTokenExpired } from '../util/func';
 
 const AuthRoute = ({ children }: PropsWithChildren) => {
   const history = useHistory();
   const token = localStorage.getItem('token') as string;
-  if (isTokenExpired(token)) {
+  if (!isTokenExpired(token)) {
     return <>{children}</>;
   } else {
     localStorage.setItem('token', '');

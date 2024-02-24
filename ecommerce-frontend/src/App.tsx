@@ -10,6 +10,7 @@ import UnprotectedRoute from './context/UnprotectedRoute';
 import Cart from './components/pages/cart/Cart';
 import OrderList from './components/pages/orders';
 import OrderDetail from './components/pages/orders/order';
+import ProductDetail from './components/pages/product-detail';
 
 function App() {
   return (
@@ -30,6 +31,11 @@ function App() {
           <Route exact path='/register'>
             <UnprotectedRoute isAuth={true}>
               <AuthForm type='register' />
+            </UnprotectedRoute>
+          </Route>
+          <Route exact path='/products/:id'>
+            <UnprotectedRoute isAuth={false}>
+              <ProductDetail />
             </UnprotectedRoute>
           </Route>
           <Route exact path='/add-product'>

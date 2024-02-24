@@ -4,9 +4,12 @@ import {
   deleteProduct,
   retrieveAllProducts,
 } from '../../../../api/products-api';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { createCartProduct } from '../../../../api/cart-api';
 import { CartProductWithProductIdDtoType } from '../../../../api/types/cart';
+import { Button } from '@nextui-org/react';
+import { isTokenExpired } from '../../../../util/func';
+import { defaultUser, useAuthContext } from '../../../../context/AuthContext';
 
 type ProductListProps = {
   category: string | null;
@@ -15,6 +18,8 @@ type ProductListProps = {
 const ProductList = ({ category }: ProductListProps) => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const token = localStorage.getItem('token') as string;
+  const history = useHistory();
+  const { setUser } = useAuthContext();
   useEffect(() => {
     async function init() {
       const data = await retrieveAllProducts(null);
@@ -32,6 +37,11 @@ const ProductList = ({ category }: ProductListProps) => {
   }
 
   async function handleAddProductToCart(product: ProductType) {
+    if (isTokenExpired(token)) {
+      setUser(defaultUser);
+      localStorage.setItem('token', '');
+      history.push('/login');
+    }
     const body: CartProductWithProductIdDtoType = {
       price: product.price,
       quantity: 1,
@@ -42,31 +52,43 @@ const ProductList = ({ category }: ProductListProps) => {
 
   function renderProducts(products: ProductType[]) {
     return products.map((product) => (
-      <li key={product.id} className='h-fit border p-2'>
-        <h3 className='text-xl font-bold'>{product.name}</h3>
+      <li
+        key={product.id}
+        onClick={() => history.push(`/products/${product.id}`)}
+        className='h-fit border rounded-xl p-4 cursor-pointer shadow-lgs'
+      >
         <img
           src={product.imageUrl}
-          className='w-60 h-60'
+          className='w-60 h-60 mx-auto'
           alt={'image of ' + product.name}
         />
-        <p>Price ${product.price.toFixed(2)}</p>
+        <h3>{product.name}</h3>
+        <p>
+          Price ${product.price.toFixed(2)}{' '}
+          <span className='line-through'>
+            ${(product.price * 2).toFixed(2)}
+          </span>
+        </p>
         <div className='flex flex-col gap-2 mt-2'>
-          <button
-            className='primary w-full'
+          <Button
+            color='primary'
+            variant='bordered'
+            className='w-full'
             onClick={() => handleAddProductToCart(product)}
           >
             Add to Cart
-          </button>
-          <div className='flex gap-2'>
-            <button className='warning w-full'>
+          </Button>
+          <div className='flex flex-col md:flex-row gap-2'>
+            <Button color='warning' className='w-full' variant='bordered'>
               <Link to={`/modify-product/${product.id}`}>Modify</Link>
-            </button>
-            <button
-              className='danger w-full'
+            </Button>
+            <Button
+              color='danger'
+              className='w-full'
               onClick={() => handleProductDelete(product.id)}
             >
               Delete
-            </button>
+            </Button>
           </div>
         </div>
       </li>
@@ -74,7 +96,7 @@ const ProductList = ({ category }: ProductListProps) => {
   }
 
   return (
-    <ul className='w-3/4 grid grid-cols-3 gap-2'>
+    <ul className='md:w-3/4 grid sm:grid-cols-2 xl:grid-cols-3 gap-2'>
       {renderProducts(
         category !== null
           ? products.filter((product) => product.category.name === category)
