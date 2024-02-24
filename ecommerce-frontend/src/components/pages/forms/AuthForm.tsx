@@ -45,7 +45,7 @@ const AuthForm = ({ type }: AuthFormType) => {
   }
 
   return (
-    <>
+    <section>
       <h1>
         {type === 'login' ? 'Enter Your Credentials' : 'Create An Account'}
       </h1>
@@ -88,7 +88,7 @@ const AuthForm = ({ type }: AuthFormType) => {
           {type === 'login' ? 'Login' : 'Register'}
         </Button>
       </form>
-    </>
+    </section>
   );
 };
 

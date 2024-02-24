@@ -15,7 +15,7 @@ function App() {
   return (
     <div>
       <Navbar />
-      <main className='container mx-auto'>
+      <main>
         <Switch>
           <Route exact path='/'>
             <UnprotectedRoute isAuth={false}>

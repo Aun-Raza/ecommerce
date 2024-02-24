@@ -13,3 +13,11 @@ form {
 .navbar-heading {
   @apply text-2xl;
 }
+
+section {
+  @apply container mx-auto;
+}
+
+.category-selector-item {
+  @apply p-3 border rounded-xl hover:bg-slate-200 cursor-pointer;
+}
