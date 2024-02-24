@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ProductWithCategoryIdType,
   defaultProductWithCategoryId,
@@ -21,6 +21,7 @@ const ProductForm = ({ operation }: ProductFormType) => {
     defaultProductWithCategoryId
   );
   const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [file, setFile] = useState<File>();
   const { id: paramId } = useParams<{ id: string }>();
   const history = useHistory();
   const token = localStorage.getItem('token') as string;
@@ -37,14 +38,14 @@ const ProductForm = ({ operation }: ProductFormType) => {
   useEffect(() => {
     async function init() {
       if (operation === 'modify' && paramId) {
-        const { name, description, price, category } = await retrieveProduct(
-          paramId
-        );
+        const { name, description, price, category, imageUrl } =
+          await retrieveProduct(paramId);
         setBody({
           name,
           description,
           price,
           categoryId: category.id,
+          imageUrl,
         });
       }
     }
@@ -66,12 +67,32 @@ const ProductForm = ({ operation }: ProductFormType) => {
     }
   }
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+      const fileUrl = URL.createObjectURL(selectedFile);
+      setBody((body) => ({ ...body, imageUrl: fileUrl }));
+    }
+  };
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const formData = new FormData();
+    const { name, description, price, categoryId } = body;
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('price', price + '');
+    formData.append('categoryId', categoryId + '');
+    if (!file && operation === 'add') return;
+    if (file) {
+      formData.append('file', file);
+    }
     if (operation === 'add') {
-      await createProduct(body, token);
+      await createProduct(formData, token);
     } else if (operation === 'modify' && paramId) {
-      await modifyProduct(paramId, body, token);
+      await modifyProduct(paramId, formData, token);
     }
     history.push('/');
   }
@@ -79,6 +100,13 @@ const ProductForm = ({ operation }: ProductFormType) => {
   return (
     <form onSubmit={handleSubmit} className='mt-2 p-3 border'>
       <h2>Add Product</h2>
+      <fieldset>
+        <label htmlFor='file'>File</label>
+        <input id='file' name='file' type='file' onChange={handleFileChange} />
+        {body.imageUrl && (
+          <img src={body.imageUrl} className='w-48 h-48' alt='' />
+        )}
+      </fieldset>
       <fieldset>
         <label htmlFor='name'>Name</label>
         <input

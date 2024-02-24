@@ -43,8 +43,12 @@ const ProductList = ({ category }: ProductListProps) => {
   function renderProducts(products: ProductType[]) {
     return products.map((product) => (
       <li key={product.id} className='h-fit border p-2'>
-        <h3>{product.name}</h3>
-        <p>{product.description}</p>
+        <h3 className='text-xl font-bold'>{product.name}</h3>
+        <img
+          src={product.imageUrl}
+          className='w-60 h-60'
+          alt={'image of ' + product.name}
+        />
         <p>Price ${product.price.toFixed(2)}</p>
         <div className='flex flex-col gap-2 mt-2'>
           <button

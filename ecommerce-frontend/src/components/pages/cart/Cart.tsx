@@ -27,9 +27,7 @@ const Cart = () => {
         <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
           <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
             <tr>
-              <th scope='col' className='px-6 py-3'>
-                Id
-              </th>
+              <th scope='col' className='px-6 py-3'></th>
               <th scope='col' className='px-6 py-3'>
                 Product
               </th>
@@ -51,7 +49,11 @@ const Cart = () => {
                   scope='row'
                   className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'
                 >
-                  {productCart.id}
+                  <img
+                    src={productCart.product.imageUrl}
+                    className='w-60 h-60'
+                    alt={'image for ' + productCart.product.name}
+                  />
                 </th>
                 <td className='px-6 py-4'>{productCart.product.name}</td>
                 <td className='px-6 py-4'>${productCart.price}</td>

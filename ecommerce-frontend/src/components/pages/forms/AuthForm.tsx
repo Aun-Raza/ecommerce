@@ -7,6 +7,7 @@ import {
 import { login, register } from '../../../api/auth-api';
 import { useAuthContext } from '../../../context/AuthContext';
 import apiClient from '../../../api/apiClient';
+import { Input, Button } from '@nextui-org/react';
 
 type AuthFormType = {
   type: string;
@@ -44,46 +45,50 @@ const AuthForm = ({ type }: AuthFormType) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className='mt-2 p-3 border'>
-      <h2>{type === 'login' ? 'Login' : 'Register'}</h2>
-      <fieldset>
-        <label htmlFor='username'>Username</label>
-        <input
+    <>
+      <h1>
+        {type === 'login' ? 'Enter Your Credentials' : 'Create An Account'}
+      </h1>
+      <form onSubmit={handleSubmit}>
+        <Input
           id='username'
           name='username'
+          label='Username'
           value={credential.username}
           onChange={({ target: { name, value } }) =>
             setCredential((c) => ({ ...c, [name]: value }))
           }
           type='text'
         />
-      </fieldset>
-      <fieldset>
-        <label htmlFor='password'>Password</label>
-        <input
+        <Input
           id='password'
           name='password'
           type='password'
+          label='Password'
           value={credential.password}
           onChange={({ target: { name, value } }) =>
             setCredential((c) => ({ ...c, [name]: value }))
           }
         />
-      </fieldset>
-      <span
-        className='block cursor-pointer'
-        onClick={() => {
-          history.push(type === 'login' ? '/register' : '/login');
-        }}
-      >
-        {type === 'login'
-          ? 'Do not have an account? Register here '
-          : 'Already have an account? Login here'}
-      </span>
-      <button type='submit' className='primary w-full mt-2'>
-        {type === 'login' ? 'Login' : 'Register'}
-      </button>
-    </form>
+        <span className='block'>
+          {type === 'login'
+            ? 'Do not have an account?'
+            : 'Already have an account?'}
+          <Button
+            className='ms-2'
+            variant='faded'
+            onClick={() => {
+              history.push(type === 'login' ? '/register' : '/login');
+            }}
+          >
+            {type === 'login' ? 'Register here' : 'Login here'}
+          </Button>
+        </span>
+        <Button color='primary' type='submit' className='w-full'>
+          {type === 'login' ? 'Login' : 'Register'}
+        </Button>
+      </form>
+    </>
   );
 };
 

@@ -12,12 +12,11 @@ export async function retrieveProduct(id: string) {
   return data;
 }
 
-export async function createProduct(
-  body: ProductWithCategoryIdType,
-  token: string
-) {
+export async function createProduct(formData: FormData, token: string) {
   try {
-    await apiClient.post('/products', body, auth(token));
+    await apiClient.post('/products', formData, {
+      headers: { 'Content-Type': 'multipart/form-data', Authorization: token },
+    });
     return;
   } catch (error) {
     console.log(error);
@@ -26,11 +25,13 @@ export async function createProduct(
 
 export async function modifyProduct(
   id: string,
-  body: ProductWithCategoryIdType,
+  formData: FormData,
   token: string
 ) {
   try {
-    await apiClient.put(`/products/${id}`, body, auth(token));
+    await apiClient.put(`/products/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data', Authorization: token },
+    });
     return;
   } catch (error) {
     console.log(error);

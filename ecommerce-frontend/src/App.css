@@ -1,29 +1,15 @@
-button {
-  @apply p-3 border rounded-lg;
-}
-
-.primary {
-  @apply bg-blue-500 text-white;
-}
-
-.warning {
-  @apply bg-yellow-500 text-white;
-}
-
-.danger {
-  @apply bg-red-500 text-white;
-}
-
-h2 {
-  @apply text-xl font-semibold;
+h1 {
+  @apply text-4xl font-semibold mt-4 mb-2;
 }
 
 fieldset {
-  @apply py-2 flex flex-col gap-2 text-xl;
+  @apply flex w-full flex-wrap md:flex-nowrap gap-4;
 }
 
-fieldset > input,
-textarea,
-select {
-  @apply border rounded p-2 pt-1;
+form {
+  @apply my-4 p-8 border flex flex-col gap-3 text-gray-400 shadow-lg;
+}
+
+.navbar-heading {
+  @apply text-2xl;
 }

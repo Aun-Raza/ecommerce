@@ -1,30 +1,48 @@
 import { Link, useHistory } from 'react-router-dom';
 import { defaultUser, useAuthContext } from '../../context/AuthContext';
+import {
+  Navbar as NavbarUI,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem,
+  Button,
+  Image,
+  Avatar,
+} from '@nextui-org/react';
 
 const Navbar = () => {
   const { user, setUser } = useAuthContext();
   const history = useHistory();
   return (
-    <nav className='flex justify-between py-3 px-6 border-b'>
-      <ul className='flex items-center gap-6'>
-        <li className='text-lg'>
-          <Link to='/'>🛍️ Online Shopping</Link>
-        </li>
-        <li>
-          <Link to='/about-us'>About Us</Link>
-        </li>
-        <li>
-          <Link to='/contact-us'>Contact Us</Link>
-        </li>
-      </ul>
-      <ul className='flex items-center gap-4'>
+    <NavbarUI>
+      <Link to='/'>
+        <NavbarBrand className='gap-2'>
+          <Image src='vault.png' className='w-12' />
+          <p className='navbar-heading'>NextGenVault</p>
+        </NavbarBrand>
+      </Link>
+      <NavbarContent justify='end'>
         {user.isAuthenticated && (
           <>
-            <Link to='/orders'>Orders</Link>
-            <Link to='/cart'>Cart</Link>
-            <li>
-              <span
-                className='cursor-pointer'
+            <NavbarItem>
+              <Link to='/orders' className=' flex items-center gap-1'>
+                <Image src='icons/order.png' className='w-8' />
+                <p>Your Orders</p>
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link to='/cart' className=' flex items-center gap-1'>
+                <Image src='icons/shopping-cart.png' className='w-8' />
+                <p>Cart</p>
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Button
+                color='primary'
+                variant='flat'
                 onClick={() => {
                   setUser(defaultUser);
                   localStorage.setItem('token', '');
@@ -32,14 +50,29 @@ const Navbar = () => {
                 }}
               >
                 Logout
-              </span>
-            </li>
-            <li>{user.username}</li>
+              </Button>
+            </NavbarItem>
+            <NavbarItem>
+              <Avatar color='secondary' name={user.username.toUpperCase()} />
+            </NavbarItem>
           </>
         )}
-        {!user.isAuthenticated && <Link to='/login'>Login</Link>}
-      </ul>
-    </nav>
+        {!user.isAuthenticated && (
+          <>
+            <NavbarItem>
+              <Button color='secondary' variant='flat'>
+                <Link to='/register'>Become a member</Link>
+              </Button>
+            </NavbarItem>
+            <NavbarItem>
+              <Button color='primary' variant='flat'>
+                <Link to='/login'>Login</Link>
+              </Button>
+            </NavbarItem>
+          </>
+        )}
+      </NavbarContent>
+    </NavbarUI>
   );
 };
 

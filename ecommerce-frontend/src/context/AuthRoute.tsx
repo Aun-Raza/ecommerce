@@ -1,5 +1,4 @@
 import { PropsWithChildren } from 'react';
-import { defaultUser, useAuthContext } from './AuthContext';
 import { useHistory } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
