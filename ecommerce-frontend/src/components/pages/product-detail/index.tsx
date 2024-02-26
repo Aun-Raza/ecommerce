@@ -44,7 +44,7 @@ const ProductDetail = () => {
         <div className='flex flex-col md:flex-row gap-3'>
           <div className='w-7/12'>
             <Image
-              className='h-unit-9xl'
+              className='h-unit-9xl object-contain'
               src={product.imageUrl}
               alt={'image of ' + product.name}
             />

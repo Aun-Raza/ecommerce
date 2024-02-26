@@ -59,7 +59,7 @@ const ProductList = ({ category }: ProductListProps) => {
       >
         <img
           src={product.imageUrl}
-          className='w-60 h-60 mx-auto'
+          className='w-60 h-60 mx-auto object-contain'
           alt={'image of ' + product.name}
         />
         <h3>{product.name}</h3>

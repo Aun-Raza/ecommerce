@@ -1,16 +1,17 @@
 import { PropsWithChildren } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { isTokenExpired } from '../util/func';
+import { defaultUser, useAuthContext } from './AuthContext';
 
 const AuthRoute = ({ children }: PropsWithChildren) => {
-  const history = useHistory();
+  const { setUser } = useAuthContext();
   const token = localStorage.getItem('token') as string;
   if (!isTokenExpired(token)) {
     return <>{children}</>;
   } else {
     localStorage.setItem('token', '');
-    history.push('/login');
-    return null;
+    setUser(defaultUser);
+    return <Redirect to='/login' />;
   }
 };
 

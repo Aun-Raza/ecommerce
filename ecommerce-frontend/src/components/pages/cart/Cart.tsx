@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { checkoutCart, retrieveCartProducts } from '../../../api/cart-api';
 import { CartType, defaultCart } from '../../../api/types/cart';
+import { Button, Image } from '@nextui-org/react';
+import { useHistory } from 'react-router-dom';
 
 const Cart = () => {
   const [cart, setCart] = useState<CartType>(defaultCart);
   const token = localStorage.getItem('token') as string;
+  const history = useHistory();
   useEffect(() => {
     async function init() {
       const data = (await retrieveCartProducts(token)) as CartType;
@@ -19,54 +22,77 @@ const Cart = () => {
     const emptyCart = (await checkoutCart(token)) as CartType;
     console.log(emptyCart);
     setCart(emptyCart);
+    history.push('/orders');
   }
 
   return (
-    <>
-      <div className='relative overflow-x-auto shadow-md sm:rounded-lg my-4'>
-        <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
-          <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
-            <tr>
-              <th scope='col' className='px-6 py-3'></th>
-              <th scope='col' className='px-6 py-3'>
-                Product
-              </th>
-              <th scope='col' className='px-6 py-3'>
-                Price
-              </th>
-              <th scope='col' className='px-6 py-3'>
-                Quantity
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {cart.products.map((productCart) => (
-              <tr
-                key={productCart.id}
-                className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700'
-              >
-                <th
-                  scope='row'
-                  className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white'
+    <section>
+      <h2>
+        Cart <span className='text-2xl'>(4 items)</span>
+      </h2>
+      <div className='mt-4 flex flex-col md:flex-row gap-3'>
+        <div className='w-7/12 border rounded-lg px-4 py-6 shadow-lg'>
+          {cart && cart.products.length === 0
+            ? 'Empty Cart'
+            : cart.products.map((productItem) => (
+                <div
+                  className='p-2 flex gap-2 [&:not(:first-of-type)]:border-t-1'
+                  key={cart.id + productItem.id}
                 >
-                  <img
-                    src={productCart.product.imageUrl}
-                    className='w-60 h-60'
-                    alt={'image for ' + productCart.product.name}
-                  />
-                </th>
-                <td className='px-6 py-4'>{productCart.product.name}</td>
-                <td className='px-6 py-4'>${productCart.price}</td>
-                <td className='px-6 py-4'>{productCart.quantity}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  <div>
+                    <Image
+                      className='w-36 h-36 object-contain'
+                      src={productItem.product.imageUrl}
+                      alt={'image of ' + productItem.product.name}
+                    />
+                  </div>
+                  <div className='mt-5 flex flex-col gap-1'>
+                    <p>{productItem.product.name}</p>
+                    <span className='block text-sm'>
+                      ${productItem.product.price}/each
+                    </span>
+                    <span className='block text-sm'>
+                      Quantity: {productItem.quantity}
+                    </span>
+                    <span className='block text-sm'>
+                      Total: ${productItem.price}
+                    </span>
+                  </div>
+                </div>
+              ))}
+        </div>
+        {cart && (
+          <div className='w-5/12 h-fit border rounded-lg px-4 py-6 flex flex-col gap-3 shadow-lg'>
+            <Button color='primary' onClick={checkout}>
+              Continue to Checkout
+            </Button>
+            <div className='px-3 flex flex-col gap-2'>
+              <div className='flex'>
+                <p className='w-48 font-bold'>
+                  Subtotal{' '}
+                  <span className='text-sm font-normal'>(4 items)</span>
+                </p>
+                <p>${cart.subtotal.toFixed(2)}</p>
+              </div>
+              <div className='flex'>
+                <p className='w-48 font-bold'>Discount</p>
+                <p>-${(cart.subtotal / 2).toFixed(2)}</p>
+              </div>
+              <div className='flex'>
+                <p className='w-48 font-bold'>
+                  Taxes <span className='text-sm font-normal'>(13%)</span>
+                </p>
+                <p>${cart.tax.toFixed(2)}</p>
+              </div>
+              <div className='flex'>
+                <p className='w-48 font-bold'>Total</p>
+                <p>${cart.total.toFixed(2)}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      <button className='primary' onClick={checkout}>
-        Checkout
-      </button>
-    </>
+    </section>
   );
 };
 

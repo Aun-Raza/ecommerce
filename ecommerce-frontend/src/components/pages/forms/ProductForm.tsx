@@ -132,7 +132,11 @@ const ProductForm = ({ operation }: ProductFormType) => {
           Upload Image
         </Button>
         {body.imageUrl && (
-          <Image src={body.imageUrl} className='w-48 h-48' alt='' />
+          <Image
+            src={body.imageUrl}
+            className='w-48 h-48 object-contain'
+            alt=''
+          />
         )}
         <fieldset className='flex flex-col md:flex-row gap-2'>
           <Input
